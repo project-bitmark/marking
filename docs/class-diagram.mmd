@@ -1,0 +1,64 @@
+classDiagram
+  direction LR
+  class Mark {
+    +iri from
+    +iri to
+    +decimal amount
+    +iri subject
+    +utf8? reason
+    +datetime at
+    +iri? tx
+    +utf8? sig
+  }
+  class Bounty {
+    +iri by
+    +decimal amount
+    +iri task
+    +datetime? expires
+    +datetime at
+    +iri? tx
+  }
+  class Submission {
+    +iri by
+    +iri claim
+    +iri? anchor
+    +datetime at
+  }
+  class Verdict {
+    +Outcome outcome
+    +json evidence
+    +iri by
+    +datetime at
+    +utf8? sig
+  }
+  class Release {
+    +iri to
+    +decimal amount
+    +datetime at
+    +iri? tx
+  }
+  class Rule {
+    +RuleKind kind
+    +utf8? procedure
+    +iri? vectors
+    +decimal? threshold
+    +int? window
+  }
+  class RuleKind {
+    <<enumeration>>
+    deterministic
+    staked
+  }
+  class Outcome {
+    <<enumeration>>
+    accepted
+    rejected
+  }
+  Bounty --> "1" Rule : rule
+  Submission --> "1" Bounty : bounty
+  Verdict --> "1" Submission : subject
+  Verdict --> "1" Rule : rule
+  Release --> "1" Bounty : bounty
+  Release --> "1" Verdict : verdict
+  Rule ..> RuleKind : kind
+  Verdict ..> Outcome : outcome

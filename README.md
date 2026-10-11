@@ -26,6 +26,79 @@ section describes, "a number of marks can be staked against the action ...
 submit it for approval by the community, if accepted the stake is released",
 with the one thing it left unspecified filled in: how approval is decided.
 
+## Class diagram
+
+Generated from the schema by `node tools/gen-class-diagram.js`; also as [SVG](class-diagram.svg).
+
+<!-- class-diagram:start -->
+```mermaid
+classDiagram
+  direction LR
+  class Mark {
+    +iri from
+    +iri to
+    +decimal amount
+    +iri subject
+    +utf8? reason
+    +datetime at
+    +iri? tx
+    +utf8? sig
+  }
+  class Bounty {
+    +iri by
+    +decimal amount
+    +iri task
+    +datetime? expires
+    +datetime at
+    +iri? tx
+  }
+  class Submission {
+    +iri by
+    +iri claim
+    +iri? anchor
+    +datetime at
+  }
+  class Verdict {
+    +Outcome outcome
+    +json evidence
+    +iri by
+    +datetime at
+    +utf8? sig
+  }
+  class Release {
+    +iri to
+    +decimal amount
+    +datetime at
+    +iri? tx
+  }
+  class Rule {
+    +RuleKind kind
+    +utf8? procedure
+    +iri? vectors
+    +decimal? threshold
+    +int? window
+  }
+  class RuleKind {
+    <<enumeration>>
+    deterministic
+    staked
+  }
+  class Outcome {
+    <<enumeration>>
+    accepted
+    rejected
+  }
+  Bounty --> "1" Rule : rule
+  Submission --> "1" Bounty : bounty
+  Verdict --> "1" Submission : subject
+  Verdict --> "1" Rule : rule
+  Release --> "1" Bounty : bounty
+  Release --> "1" Verdict : verdict
+  Rule ..> RuleKind : kind
+  Verdict ..> Outcome : outcome
+```
+<!-- class-diagram:end -->
+
 ## Two kinds of rule, nothing in between
 
 A bounty names its rule when it is posted, so the grader is fixed before
