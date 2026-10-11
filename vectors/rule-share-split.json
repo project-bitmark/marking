@@ -1,0 +1,9 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/rule-share-split",
+  "@type": "Rule",
+  "label": "share-split",
+  "kind": "deterministic",
+  "procedure": "Settling a mark whose subject is a share: if the shared link is unclaimed, 100% to the share's 'from'. If claimed, 50% to the share's 'from' and 50% to the claimant. If the share's own subject is a share, apply the same split to the sharer's half, one level up, until the subject is not a share.",
+  "comment": "A fixed ratio, declared before anyone shares. Deterministic: anyone can recompute who is owed what from the chain of shares and the claim registry."
+}

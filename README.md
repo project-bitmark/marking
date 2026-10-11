@@ -99,6 +99,16 @@ classDiagram
 ```
 <!-- class-diagram:end -->
 
+## Sharing
+
+A share is a Mark whose subject is a link, made by the sharer. To reward a
+shared link you mark the share, not the bare link, so one object keeps both
+the link and the curator. Settlement resolves who is paid: the sharer, by the
+key in the share; the link's creator too, once they claim it, by a declared
+split. The rank of links and the rank of curators are two groupings of the
+same marks. `settlementRules` in the mark module and the `share-split` rule
+in `vectors/` say exactly how.
+
 ## Two kinds of rule, nothing in between
 
 A bounty names its rule when it is posted, so the grader is fixed before

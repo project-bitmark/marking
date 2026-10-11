@@ -1,0 +1,11 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/mark-on-share",
+  "@type": "Mark",
+  "from": "https://github.com/MarkPfennig",
+  "amount": "0.5",
+  "subject": "https://bitmark.co/marking/vectors/share",
+  "reason": "Useful.",
+  "at": "2026-10-11T16:00:00Z",
+  "comment": "A mark on the share, not on the bare link. No 'to': settlement under share-split pays the sharer in full while the link is unclaimed, and splits with the creator once claimed. Example, not yet settled."
+}

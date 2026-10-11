@@ -8,7 +8,7 @@
       "version": "0.0.1",
       "layer": "value",
       "seeAlso": "https://github.com/project-bitmark/marking/wiki",
-      "comment": "The unit of the whole system. The wiki (2014) defines marking as 'the process of giving reputation, giving someone a mark for something they have created, offered, or shared', and says marks 'are a limited resource, the process of marking transfers ownership of the marks from one user to another'. So a mark is a transfer with a subject: who gave, who received, how much, and an IRI for the thing it was given for. A like is free; a mark is spent. That is what makes the sum of marks an honest measure of value, and what makes this object usable as a grade in the loop the other four modules describe. The subject can be anything with an IRI: a web address (getMarked), a commit (gitmark), a person, an issue, a song."
+      "comment": "The unit of the whole system. The wiki (2014) defines marking as 'the process of giving reputation, giving someone a mark for something they have created, offered, or shared', and says marks 'are a limited resource, the process of marking transfers ownership of the marks from one user to another'. So a mark is a transfer with a subject: who gave, who received, how much, and an IRI for the thing it was given for. A like is free; a mark is spent. That is what makes the sum of marks an honest measure of value, and what makes this object usable as a grade in the loop the other four modules describe. The subject can be anything with an IRI: a web address (getMarked), a commit (gitmark), a person, an issue, a song. A mark can itself be the subject of a mark: a public mark of a link is a share, and marking the share rewards the link and the sharer at once (see the settlement rules below)."
     },
     {
       "@id": "mk:Mark",
@@ -80,6 +80,47 @@
           "valueType": "utf8",
           "required": false,
           "comment": "Signature by 'from' over the canonical object, for marks that live off chain or precede their transaction. Scheme follows the key kind of 'from'."
+        }
+      ]
+    },
+    {
+      "@id": "mk:settlementRules",
+      "@type": "RuleSet",
+      "module": "mk:mark",
+      "label": "settlementRules",
+      "comment": "How a mark with no 'to' finds its recipients when it is settled. The wiki: curators 'receive the marks given to them for sharing the link', a claimed page's marks 'are split between the marker and the creator', and 'anybody who further shares a marking elsewhere will receive a portion'. A share is a Mark whose subject is the link; marking the share, rather than the bare link, keeps both the link and the sharer in one object, so the rank of links and the rank of curators are two groupings of the same marks.",
+      "rules": [
+        {
+          "@id": "mk:rule-settle-key-in-subject",
+          "@type": "ValidationRule",
+          "label": "settle-key-in-subject",
+          "errorCode": "settle-unresolved",
+          "check": "if 'to' is absent and the subject carries a key (a Mark's 'from', a signed event's pubkey, a DID), that key is the recipient",
+          "comment": "A share is a Mark, so its sharer is its 'from'. The first resolution step and the one that makes marking a share pay the curator."
+        },
+        {
+          "@id": "mk:rule-settle-split-claimed",
+          "@type": "ValidationRule",
+          "label": "settle-split-claimed",
+          "errorCode": "settle-split",
+          "check": "if the subject is a share of a link whose creator has claimed it, the amount is split between sharer and creator by the share-split Rule the settlement names; unclaimed, the sharer takes all",
+          "comment": "The split is a Rule with a fixed ratio, declared, so a sharer knows before sharing what a claim will cost them. Claiming is the creator proving a key for the link."
+        },
+        {
+          "@id": "mk:rule-settle-reshare-chain",
+          "@type": "ValidationRule",
+          "label": "settle-reshare-chain",
+          "errorCode": "settle-chain",
+          "check": "a share whose subject is itself a share applies the split again one level up, so each re-sharer takes a portion of what their share receives",
+          "comment": "The wiki's 'further shares a marking elsewhere'. Bounded by the chain of shares, which is finite and signed at every link."
+        },
+        {
+          "@id": "mk:rule-settle-unclaimed-owed",
+          "@type": "ValidationRule",
+          "label": "settle-unclaimed-owed",
+          "errorCode": "settle-owed",
+          "check": "a mark whose subject resolves to nobody stays unsettled: owed, debited from the giver's budget, payable on a later claim",
+          "comment": "Nothing is paid to an address nobody holds. The debt is the incentive to claim."
         }
       ]
     }

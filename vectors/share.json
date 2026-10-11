@@ -1,0 +1,11 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/share",
+  "@type": "Mark",
+  "from": "https://github.com/melvincarvalho",
+  "amount": "0.01",
+  "subject": "https://github.com/bitcoin-blake/electrum-xbt/releases/tag/v4.8.2-xbt.1",
+  "reason": "Electrum for the BLAKE2b chain, testnet4 release.",
+  "at": "2026-10-11T15:30:00Z",
+  "comment": "A share: a public mark of a link by the person sharing it. No 'to': the link's creator has not claimed it. This object is what others mark."
+}

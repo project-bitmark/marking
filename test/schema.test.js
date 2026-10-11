@@ -55,7 +55,7 @@ const checkValue = (f, v, where) => {
 };
 
 test('every vector fits its Struct exactly', () => {
-  assert.equal(vectors.length, 6);
+  assert.equal(vectors.length, 9);
   for (const [file, v] of vectors) {
     const s = structs.get(v['@type']);
     assert.ok(s, `${file}: struct ${v['@type']}`);
@@ -82,4 +82,17 @@ test('the loop vectors link into one chain under the bounty rule', () => {
   assert.equal(rule.kind, 'deterministic');
   assert.equal(verdict.evidence.fail, 0);                   // verdict-rerunnable, as recorded
   assert.equal(release.amount, bounty.amount);
+});
+
+test('a share is a mark of a link, and a mark on the share keeps both link and sharer', () => {
+  const byId = new Map(vectors.map(([, v]) => [v['@id'], v]));
+  const share = byId.get('https://bitmark.co/marking/vectors/share');
+  const onShare = byId.get('https://bitmark.co/marking/vectors/mark-on-share');
+  const split = byId.get('https://bitmark.co/marking/vectors/rule-share-split');
+  assert.equal(share['@type'], 'Mark');
+  assert.equal(onShare.subject, share['@id']);               // marks the share, not the bare link
+  assert.equal(share.to, undefined);                         // link unclaimed
+  assert.equal(onShare.to, undefined);                       // resolved at settlement
+  assert.equal(split.kind, 'deterministic');                 // settle-key-in-subject: sharer = share.from
+  assert.ok(share.from && share.subject.startsWith('https://'));
 });
