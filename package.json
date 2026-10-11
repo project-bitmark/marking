@@ -6,5 +6,6 @@
   "license": "MIT",
   "description": "Marking as data: Mark, Bounty, Submission, Verdict, Release in JSON-LD, with one captured instance each and the rules that link them",
   "scripts": { "test": "node --test",
-    "diagram": "node tools/gen-class-diagram.js" }
+    "diagram": "node tools/gen-class-diagram.js",
+    "og": "node tools/gen-og.js" }
 }
