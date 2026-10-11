@@ -1,0 +1,9 @@
+{
+  "name": "marking",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "Marking as data: Mark, Bounty, Submission, Verdict, Release in JSON-LD, with one captured instance each and the rules that link them",
+  "scripts": { "test": "node --test test/" }
+}

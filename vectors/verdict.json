@@ -1,0 +1,12 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/verdict",
+  "@type": "Verdict",
+  "subject": "https://bitmark.co/marking/vectors/submission",
+  "rule": "https://bitmark.co/marking/vectors/rule-kernel-tests",
+  "outcome": "accepted",
+  "evidence": { "command": "node --test packages/*/test/*.test.js", "pass": 32, "fail": 0 },
+  "by": "https://github.com/melvincarvalho",
+  "at": "2026-10-11T08:45:00Z",
+  "comment": "Deterministic: rerun the procedure at the merge commit and the counts must match."
+}

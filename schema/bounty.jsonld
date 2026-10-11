@@ -1,0 +1,104 @@
+{
+  "@context": "../context.jsonld",
+  "@graph": [
+    {
+      "@id": "mk:bounty",
+      "@type": "Module",
+      "label": "bounty",
+      "version": "0.0.1",
+      "layer": "loop",
+      "seeAlso": "https://github.com/project-bitmark/marking/wiki#automation",
+      "comment": "Marks locked against a task rather than given. The wiki's Automation section: 'When bugs or improvements are requested a number of marks can be staked against the action of completing the required actions. Any programmer can then fix the bug or create the improvement and submit it for approval by the community, if accepted the stake is released and the marks given to the programmer.' This module is the first step of that loop. The one thing the wiki did not specify is how approval is decided; here a bounty names its rule when it is created, so the grader is fixed before anyone starts work."
+    },
+    {
+      "@id": "mk:Bounty",
+      "@type": "Struct",
+      "module": "mk:bounty",
+      "label": "Bounty",
+      "comment": "Marks staked by one party against a task, to be released to whoever satisfies the named rule. The rule is an IRI for a Rule object (verdict module); its kind decides whether a machine or a tally judges the work.",
+      "fields": [
+        {
+          "property": "mk:by",
+          "label": "by",
+          "key": "by",
+          "valueType": "iri",
+          "required": true,
+          "comment": "Who stakes. The marks are theirs until a release moves them."
+        },
+        {
+          "property": "mk:amount",
+          "label": "amount",
+          "key": "amount",
+          "valueType": "decimal",
+          "required": true,
+          "comment": "Marks locked, decimal string, five places, positive."
+        },
+        {
+          "property": "mk:task",
+          "label": "task",
+          "key": "task",
+          "valueType": "iri",
+          "required": true,
+          "comment": "What has to be done. An issue URL, a spec section, a Web State describing the wanted state. The submission's claim must be about this task."
+        },
+        {
+          "property": "mk:rule",
+          "label": "rule",
+          "key": "rule",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The Rule that will judge submissions. Fixed at creation; a verdict for this bounty under any other rule is invalid."
+        },
+        {
+          "property": "mk:expires",
+          "label": "expires",
+          "key": "expires",
+          "valueType": "datetime",
+          "required": false,
+          "comment": "After this instant the stake returns to 'by' if no accepted verdict exists."
+        },
+        {
+          "property": "mk:at",
+          "label": "at",
+          "key": "at",
+          "valueType": "datetime",
+          "required": true,
+          "comment": "When the bounty was posted."
+        },
+        {
+          "property": "mk:tx",
+          "label": "tx",
+          "key": "tx",
+          "valueType": "iri",
+          "required": false,
+          "comment": "The locking output, txo: IRI. Absent while the stake is a promise."
+        }
+      ]
+    },
+    {
+      "@id": "mk:bountyRules",
+      "@type": "RuleSet",
+      "module": "mk:bounty",
+      "label": "bountyRules",
+      "rules": [
+        {
+          "@id": "mk:rule-bounty-amount",
+          "@type": "ValidationRule",
+          "label": "bounty-amount",
+          "errorCode": "bounty-amount",
+          "check": "amount > 0 and has at most 5 decimal places",
+          "comment": "A bounty of nothing grades nothing."
+        },
+        {
+          "@id": "mk:rule-bounty-rule-fixed",
+          "@type": "ValidationRule",
+          "label": "bounty-rule-fixed",
+          "errorCode": "bounty-rule-fixed",
+          "check": "rule is set at creation and never changes",
+          "comment": "The grader must be known before work starts, or the stake can be kept by moving the goalposts."
+        }
+      ],
+      "comment": "What makes a bounty a bounty rather than a mark with a label: a positive stake and a grader fixed before work starts."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/rule-kernel-tests",
+  "@type": "Rule",
+  "label": "kernel-tests",
+  "kind": "deterministic",
+  "procedure": "In a checkout of https://github.com/bitcoin-kernel/kernel at the submission's merge commit, run `node --test packages/*/test/*.test.js`. Accepted iff every test passes.",
+  "vectors": "https://github.com/bitcoin-kernel/kernel/tree/gh-pages/packages/kernel/test/vectors",
+  "comment": "The kernel's own test suite, which runs real transactions from BLAKE2b mainnet blocks against the schema's rules. Anyone can rerun it."
+}

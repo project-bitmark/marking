@@ -1,0 +1,200 @@
+{
+  "@context": "../context.jsonld",
+  "@graph": [
+    {
+      "@id": "mk:verdict",
+      "@type": "Module",
+      "label": "verdict",
+      "version": "0.0.1",
+      "layer": "loop",
+      "comment": "The step the 2014 wiki left open: how 'approval by the community' is decided. A verdict is a signed statement about one submission, saying which rule produced it and what the rule found. There are exactly two kinds of rule. A deterministic rule can be rerun by anyone from the submission and its vectors and must give the same outcome, so the verdict is a cache, not an authority: a test suite passing, a node accepting a transaction, a hash matching. A staked rule is decided by marks: the outcome is the tally, and spam is expensive because every vote is a mark at risk. Deterministic rules grade what has a right answer. Staked rules grade what only has a valued answer. Nothing in between."
+    },
+    {
+      "@id": "mk:RuleKind",
+      "@type": "Enumeration",
+      "module": "mk:verdict",
+      "label": "RuleKind",
+      "comment": "The two ways a rule can decide.",
+      "members": [
+        {
+          "label": "deterministic",
+          "value": "deterministic",
+          "comment": "Rerunnable by anyone from the submission and the rule's vectors; same inputs, same outcome. The verdict's evidence is what the procedure produced."
+        },
+        {
+          "label": "staked",
+          "value": "staked",
+          "comment": "Decided by marks staked for and against within a window. The verdict's evidence is the tally."
+        }
+      ]
+    },
+    {
+      "@id": "mk:Rule",
+      "@type": "Struct",
+      "module": "mk:verdict",
+      "label": "Rule",
+      "comment": "A published, addressable way of deciding. A bounty names one; a verdict cites one. Deterministic rules carry a procedure and the vectors it runs against; staked rules carry a threshold and a window.",
+      "fields": [
+        {
+          "property": "mk:kind",
+          "label": "kind",
+          "key": "kind",
+          "valueType": "enum",
+          "structType": "mk:RuleKind",
+          "required": true,
+          "comment": "deterministic or staked."
+        },
+        {
+          "property": "mk:procedure",
+          "label": "procedure",
+          "key": "procedure",
+          "valueType": "utf8",
+          "required": false,
+          "comment": "Deterministic rules: what to run, precisely enough to rerun. A command in a named repository at the submission's commit, for example."
+        },
+        {
+          "property": "mk:vectors",
+          "label": "vectors",
+          "key": "vectors",
+          "valueType": "iri",
+          "required": false,
+          "comment": "Deterministic rules: the fixed inputs and expected outputs the procedure is checked against. The rule is only as good as these."
+        },
+        {
+          "property": "mk:threshold",
+          "label": "threshold",
+          "key": "threshold",
+          "valueType": "decimal",
+          "required": false,
+          "comment": "Staked rules: marks for minus marks against must reach this for acceptance."
+        },
+        {
+          "property": "mk:window",
+          "label": "window",
+          "key": "window",
+          "valueType": "int",
+          "required": false,
+          "comment": "Staked rules: seconds after the submission during which marks count."
+        }
+      ]
+    },
+    {
+      "@id": "mk:Outcome",
+      "@type": "Enumeration",
+      "module": "mk:verdict",
+      "label": "Outcome",
+      "comment": "What a verdict says. No third value: a rule that cannot decide produces no verdict.",
+      "members": [
+        {
+          "label": "accepted",
+          "value": "accepted",
+          "comment": "The submission satisfies the rule. A release may reference this verdict."
+        },
+        {
+          "label": "rejected",
+          "value": "rejected",
+          "comment": "It does not. The bounty stays open."
+        }
+      ]
+    },
+    {
+      "@id": "mk:Verdict",
+      "@type": "Struct",
+      "module": "mk:verdict",
+      "label": "Verdict",
+      "comment": "One judgement of one submission under one rule, signed by whoever or whatever ran the rule.",
+      "fields": [
+        {
+          "property": "mk:subject",
+          "label": "subject",
+          "key": "subject",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The Submission judged."
+        },
+        {
+          "property": "mk:rule",
+          "label": "rule",
+          "key": "rule",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The Rule applied. Must be the rule the submission's bounty named."
+        },
+        {
+          "property": "mk:outcome",
+          "label": "outcome",
+          "key": "outcome",
+          "valueType": "enum",
+          "structType": "mk:Outcome",
+          "required": true,
+          "comment": "accepted or rejected."
+        },
+        {
+          "property": "mk:evidence",
+          "label": "evidence",
+          "key": "evidence",
+          "valueType": "json",
+          "required": true,
+          "comment": "What the rule produced: for a deterministic rule the procedure's result (tests run and failed, the hash compared); for a staked rule the marks for and against and the window's close. Enough for a reader to rerun or recount."
+        },
+        {
+          "property": "mk:by",
+          "label": "by",
+          "key": "by",
+          "valueType": "iri",
+          "required": true,
+          "comment": "Who signed the verdict: a person, a node, a tally contract."
+        },
+        {
+          "property": "mk:at",
+          "label": "at",
+          "key": "at",
+          "valueType": "datetime",
+          "required": true,
+          "comment": "When decided."
+        },
+        {
+          "property": "mk:sig",
+          "label": "sig",
+          "key": "sig",
+          "valueType": "utf8",
+          "required": false,
+          "comment": "Signature by 'by' over the canonical object."
+        }
+      ]
+    },
+    {
+      "@id": "mk:verdictRules",
+      "@type": "RuleSet",
+      "module": "mk:verdict",
+      "label": "verdictRules",
+      "rules": [
+        {
+          "@id": "mk:rule-verdict-rule-matches-bounty",
+          "@type": "ValidationRule",
+          "label": "verdict-rule-matches-bounty",
+          "errorCode": "verdict-rule-mismatch",
+          "check": "verdict.rule == bounty(submission.bounty).rule",
+          "comment": "A verdict under a rule the bounty did not name grades nothing."
+        },
+        {
+          "@id": "mk:rule-verdict-rerunnable",
+          "@type": "ValidationRule",
+          "label": "verdict-rerunnable",
+          "errorCode": "verdict-not-reproducible",
+          "check": "for kind == deterministic: rerunning rule.procedure on submission.claim against rule.vectors yields verdict.outcome",
+          "comment": "A deterministic verdict that does not reproduce is wrong, whoever signed it."
+        },
+        {
+          "@id": "mk:rule-verdict-staked-evidence",
+          "@type": "ValidationRule",
+          "label": "verdict-staked-evidence",
+          "errorCode": "verdict-tally-missing",
+          "check": "for kind == staked: evidence lists every Mark counted, and for - against >= threshold iff outcome == accepted",
+          "comment": "The tally must be recountable from the marks it cites."
+        }
+      ],
+      "comment": "What makes a verdict trustworthy: it uses the rule the bounty named, and its evidence lets anyone rerun or recount it."
+    }
+  ]
+}

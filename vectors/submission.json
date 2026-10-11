@@ -1,0 +1,10 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/submission",
+  "@type": "Submission",
+  "by": "https://github.com/melvincarvalho",
+  "bounty": "https://bitmark.co/marking/vectors/bounty",
+  "claim": "https://github.com/bitcoin-kernel/kernel/pull/15",
+  "at": "2026-10-11T08:30:00Z",
+  "comment": "The pull request that added the overlay, with real vectors from mainnet blocks 976646 and 976647. No gitmark anchor yet, so no release can cite it until one exists."
+}

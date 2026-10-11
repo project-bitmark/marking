@@ -1,0 +1,62 @@
+{
+  "@context": "../context.jsonld",
+  "@graph": [
+    {
+      "@id": "mk:submission",
+      "@type": "Module",
+      "label": "submission",
+      "version": "0.0.1",
+      "layer": "loop",
+      "comment": "A claim that a bounty's task is done, anchored so it cannot be changed after it is judged. For code the claim is a commit or merge and the anchor is a gitmark: the commit hash written into a Bitcoin-family transaction. For anything else the claim is a Web State. A submission is not a verdict; it is the thing a verdict is about."
+    },
+    {
+      "@id": "mk:Submission",
+      "@type": "Struct",
+      "module": "mk:submission",
+      "label": "Submission",
+      "comment": "Who claims, against which bounty, what the claim points at, and where it is anchored.",
+      "fields": [
+        {
+          "property": "mk:by",
+          "label": "by",
+          "key": "by",
+          "valueType": "iri",
+          "required": true,
+          "comment": "Who submits. A release goes to this party if the verdict accepts."
+        },
+        {
+          "property": "mk:bounty",
+          "label": "bounty",
+          "key": "bounty",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The Bounty this answers."
+        },
+        {
+          "property": "mk:claim",
+          "label": "claim",
+          "key": "claim",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The work: a commit URL, a pull request, a Web State IRI. What the rule is run against."
+        },
+        {
+          "property": "mk:anchor",
+          "label": "anchor",
+          "key": "anchor",
+          "valueType": "iri",
+          "required": false,
+          "comment": "On-chain anchor of the claim: a txo: IRI of a gitmark output carrying the commit hash, or any transaction committing to the claim's hash. Required for a release; optional while a submission is being judged."
+        },
+        {
+          "property": "mk:at",
+          "label": "at",
+          "key": "at",
+          "valueType": "datetime",
+          "required": true,
+          "comment": "When submitted."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/release",
+  "@type": "Release",
+  "bounty": "https://bitmark.co/marking/vectors/bounty",
+  "verdict": "https://bitmark.co/marking/vectors/verdict",
+  "to": "https://github.com/melvincarvalho",
+  "amount": "10",
+  "at": "2026-10-11T08:50:00Z",
+  "comment": "Not yet paid on chain: 'tx' absent. The object is valid; the transfer is pending."
+}

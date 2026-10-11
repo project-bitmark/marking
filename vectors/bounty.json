@@ -1,0 +1,11 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/bounty",
+  "@type": "Bounty",
+  "by": "https://github.com/bitcoin-kernel",
+  "amount": "10",
+  "task": "https://github.com/bitcoin-kernel/kernel/issues/10",
+  "rule": "https://bitmark.co/marking/vectors/rule-kernel-tests",
+  "at": "2026-10-11T07:40:00Z",
+  "comment": "Captured from the first real run of the loop: the fake-multisig policy overlay for bitcoin-kernel. The marks are not yet on chain; 'tx' is absent on purpose."
+}

@@ -1,0 +1,103 @@
+{
+  "@context": "../context.jsonld",
+  "@graph": [
+    {
+      "@id": "mk:release",
+      "@type": "Module",
+      "label": "release",
+      "version": "0.0.1",
+      "layer": "loop",
+      "comment": "The bounty moving to the submitter, referencing the verdict that allowed it. On chain this is a transfer like any mark; what makes it a release is the reference, so the chain bounty to submission to verdict to payment is one walk through four objects and anyone can check that the marks moved for a reason that was decided by the rule named up front."
+    },
+    {
+      "@id": "mk:Release",
+      "@type": "Struct",
+      "module": "mk:release",
+      "label": "Release",
+      "comment": "Payment of a bounty against an accepted verdict.",
+      "fields": [
+        {
+          "property": "mk:bounty",
+          "label": "bounty",
+          "key": "bounty",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The Bounty paid."
+        },
+        {
+          "property": "mk:verdict",
+          "label": "verdict",
+          "key": "verdict",
+          "valueType": "iri",
+          "required": true,
+          "comment": "The accepted Verdict that allows this release. Its subject's bounty must be this bounty."
+        },
+        {
+          "property": "mk:to",
+          "label": "to",
+          "key": "to",
+          "valueType": "iri",
+          "required": true,
+          "comment": "Who is paid: the submission's 'by'."
+        },
+        {
+          "property": "mk:amount",
+          "label": "amount",
+          "key": "amount",
+          "valueType": "decimal",
+          "required": true,
+          "comment": "Marks released. Equals the bounty's amount unless the rule splits it."
+        },
+        {
+          "property": "mk:at",
+          "label": "at",
+          "key": "at",
+          "valueType": "datetime",
+          "required": true,
+          "comment": "When released."
+        },
+        {
+          "property": "mk:tx",
+          "label": "tx",
+          "key": "tx",
+          "valueType": "iri",
+          "required": false,
+          "comment": "The transfer, txo: IRI. Absent until broadcast."
+        }
+      ]
+    },
+    {
+      "@id": "mk:releaseRules",
+      "@type": "RuleSet",
+      "module": "mk:release",
+      "label": "releaseRules",
+      "rules": [
+        {
+          "@id": "mk:rule-release-accepted",
+          "@type": "ValidationRule",
+          "label": "release-accepted",
+          "errorCode": "release-without-acceptance",
+          "check": "verdict(release.verdict).outcome == accepted",
+          "comment": "No payment on a rejected or missing verdict."
+        },
+        {
+          "@id": "mk:rule-release-chain",
+          "@type": "ValidationRule",
+          "label": "release-chain",
+          "errorCode": "release-chain-broken",
+          "check": "submission(verdict.subject).bounty == release.bounty and release.to == submission.by",
+          "comment": "The four objects must link into one chain, or the payment is for something else."
+        },
+        {
+          "@id": "mk:rule-release-once",
+          "@type": "ValidationRule",
+          "label": "release-once",
+          "errorCode": "release-duplicate",
+          "check": "at most one Release per Bounty",
+          "comment": "A bounty is paid once."
+        }
+      ],
+      "comment": "What makes a release a payment for the task rather than a transfer: an accepted verdict, an unbroken chain of references, and only once."
+    }
+  ]
+}

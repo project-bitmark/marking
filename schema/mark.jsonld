@@ -1,0 +1,87 @@
+{
+  "@context": "../context.jsonld",
+  "@graph": [
+    {
+      "@id": "mk:mark",
+      "@type": "Module",
+      "label": "mark",
+      "version": "0.0.1",
+      "layer": "value",
+      "seeAlso": "https://github.com/project-bitmark/marking/wiki",
+      "comment": "The unit of the whole system. The wiki (2014) defines marking as 'the process of giving reputation, giving someone a mark for something they have created, offered, or shared', and says marks 'are a limited resource, the process of marking transfers ownership of the marks from one user to another'. So a mark is a transfer with a subject: who gave, who received, how much, and an IRI for the thing it was given for. A like is free; a mark is spent. That is what makes the sum of marks an honest measure of value, and what makes this object usable as a grade in the loop the other four modules describe. The subject can be anything with an IRI: a web address (getMarked), a commit (gitmark), a person, an issue, a song."
+    },
+    {
+      "@id": "mk:Mark",
+      "@type": "Struct",
+      "module": "mk:mark",
+      "label": "Mark",
+      "comment": "One transfer of marks given as reputation. The amount is in marks, divisible to five decimal places as the wiki fixes it (0.00001 marks = 0.01 markbits). 'tx' points at the Bitmark transaction that moved the marks once it exists; until then the object is a promise and nothing in the loop should treat it as settled.",
+      "fields": [
+        {
+          "property": "mk:from",
+          "label": "from",
+          "key": "from",
+          "valueType": "iri",
+          "required": true,
+          "comment": "Who gives. An IRI for a key or account: a Bitmark address, a nostr npub, a DID, a GitHub account. The marks leave this party."
+        },
+        {
+          "property": "mk:to",
+          "label": "to",
+          "key": "to",
+          "valueType": "iri",
+          "required": true,
+          "comment": "Who receives. Same kinds of IRI as 'from'."
+        },
+        {
+          "property": "mk:amount",
+          "label": "amount",
+          "key": "amount",
+          "valueType": "decimal",
+          "required": true,
+          "comment": "Marks transferred, as a decimal string with at most five decimal places. Positive."
+        },
+        {
+          "property": "mk:subject",
+          "label": "subject",
+          "key": "subject",
+          "valueType": "iri",
+          "required": true,
+          "comment": "What the mark is for. Any IRI. The reputation accrues to 'to' and the rank accrues to this subject, which is how the wiki's 'a measure of marks received over a period of time gives each marked thing a rank' is computed."
+        },
+        {
+          "property": "mk:reason",
+          "label": "reason",
+          "key": "reason",
+          "valueType": "utf8",
+          "required": false,
+          "comment": "Free text from the giver. Not interpreted."
+        },
+        {
+          "property": "mk:at",
+          "label": "at",
+          "key": "at",
+          "valueType": "datetime",
+          "required": true,
+          "comment": "When the mark was given, RFC 3339."
+        },
+        {
+          "property": "mk:tx",
+          "label": "tx",
+          "key": "tx",
+          "valueType": "iri",
+          "required": false,
+          "comment": "The on-chain transfer, as a txo: IRI (txo:<chain>:<txid>:<vout>, the scheme bitcoin-kernel's utxo page resolves) or a transaction URL. Absent until broadcast."
+        },
+        {
+          "property": "mk:sig",
+          "label": "sig",
+          "key": "sig",
+          "valueType": "utf8",
+          "required": false,
+          "comment": "Signature by 'from' over the canonical object, for marks that live off chain or precede their transaction. Scheme follows the key kind of 'from'."
+        }
+      ]
+    }
+  ]
+}

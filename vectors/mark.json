@@ -1,0 +1,12 @@
+{
+  "@context": "../context.jsonld",
+  "@id": "https://bitmark.co/marking/vectors/mark",
+  "@type": "Mark",
+  "from": "https://github.com/melvincarvalho",
+  "to": "https://github.com/MarkPfennig",
+  "amount": "1",
+  "subject": "https://github.com/project-bitmark/marking/wiki",
+  "reason": "For writing the loop down in 2014.",
+  "at": "2026-10-11T18:00:00Z",
+  "comment": "A plain mark, outside the loop: reputation given for a thing with an IRI. Not yet on chain."
+}
