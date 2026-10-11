@@ -15,7 +15,7 @@
       "@type": "Struct",
       "module": "mk:mark",
       "label": "Mark",
-      "comment": "One transfer of marks given as reputation. The amount is in marks, divisible to five decimal places as the wiki fixes it (0.00001 marks = 0.01 markbits). 'tx' points at the Bitmark transaction that moved the marks once it exists; until then the object is a promise and nothing in the loop should treat it as settled.",
+      "comment": "One transfer of marks given as reputation. The amount is in marks, divisible to five decimal places as the wiki fixes it (0.00001 marks = 0.01 markbits). 'to' may be unresolved: a mark on a thing nobody has claimed is owed, not paid. 'tx' points at the Bitmark transaction that moved the marks once it exists; until then the object is a promise and nothing in the loop should treat it as settled.",
       "fields": [
         {
           "property": "mk:from",
@@ -30,8 +30,8 @@
           "label": "to",
           "key": "to",
           "valueType": "iri",
-          "required": true,
-          "comment": "Who receives. Same kinds of IRI as 'from'."
+          "required": false,
+          "comment": "Who receives, when known. Same kinds of IRI as 'from'. Absent when the subject has no owner yet: the mark is then owed to whoever claims the subject, by a key the subject carries or by a later claim, which is how the wiki treats an unclaimed page ('any page with a getMarked button is considered to be claimed by the content creator'). Settlement resolves it; until then the marks stay with the giver as a debt."
         },
         {
           "property": "mk:amount",
